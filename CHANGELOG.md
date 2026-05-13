@@ -9,6 +9,7 @@ and this project adheres to
 ### Added
 
 - ✨(backend) support creating subdoc from file #1987
+- ✨(frontend) comment side panel #2279
 
 ### Fixed
 

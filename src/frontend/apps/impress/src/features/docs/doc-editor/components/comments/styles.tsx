@@ -5,7 +5,9 @@ export const DocsCommentsStyle = createGlobalStyle<{
   currentUserAvatarUrl?: string;
 }>`
   .--docs--main-editor.bn-root,
-  .--docs--main-editor.bn-root .ProseMirror {
+  .--docs--main-editor.bn-root .ProseMirror,
+  .--docs--comments-sidebar.bn-root,
+  .--docs--comments-sidebar.bn-root .ProseMirror {
     // Comments marks in the editor
     .bn-editor {
       // Resets blocknote comments styles
@@ -37,6 +39,22 @@ export const DocsCommentsStyle = createGlobalStyle<{
                 --c--contextuals--background--palette--yellow--tertiary
               );
             }
+          }
+
+          .bn-thread-mark[data-orphan='true']:has(> .bn-thread-mark-selected) {
+            background-color: color-mix(
+              in srgb,
+              var(--c--contextuals--background--palette--blue-1--tertiary) 40%,
+              transparent
+            );
+            border-bottom: 2px solid
+              var(--c--contextuals--background--palette--blue-1--secondary);
+
+            mix-blend-mode: multiply;
+
+            transition:
+              background-color var(--c--globals--transitions--duration),
+              border-bottom-color var(--c--globals--transitions--duration);
           }
         `}
 
@@ -85,6 +103,12 @@ export const DocsCommentsStyle = createGlobalStyle<{
         padding: 8px;
         flex-wrap: nowrap;
         gap: 0px;
+        flex-direction: column;
+        align-items: initial;
+
+        & > div:first-child {
+          flex-direction: row;
+        }
 
         & .bn-editor {
           padding-left: var(--c--globals--spacings--lg);
@@ -100,7 +124,7 @@ export const DocsCommentsStyle = createGlobalStyle<{
             padding: var(--c--globals--spacings--0)
               var(--c--globals--spacings--st);
             background: none;
-            border: 1px solid var(--c--globals--colors--gray-300);
+            border: 1px solid var(--c--contextuals--border--semantic--neutral--tertiary);
             border-radius: var(--c--globals--spacings--st);
             height: var(--c--globals--spacings--md);
           }
@@ -131,6 +155,8 @@ export const DocsCommentsStyle = createGlobalStyle<{
 
           // Date
           span.mantine-focus-auto {
+            font-weight: 400;
+            margin-left: var(--c--globals--spacings--2xs) !important;
           }
 
           .bn-comment-actions {
@@ -168,7 +194,7 @@ export const DocsCommentsStyle = createGlobalStyle<{
               height: var(--c--globals--spacings--md);
               padding-inline: var(--c--globals--spacings--st);
 
-              &[data-test='save'] {
+              &:first-child {
                 border: 1px solid
                   var(--c--contextuals--background--semantic--brand--primary);
                 background: var(
@@ -179,7 +205,7 @@ export const DocsCommentsStyle = createGlobalStyle<{
                 );
               }
 
-              &[data-test='cancel'] {
+              &:last-child {
                 background: white;
                 border: 1px solid
                   var(--c--contextuals--border--surface--primary);
@@ -256,6 +282,87 @@ export const DocsCommentsStyle = createGlobalStyle<{
 
           .ProseMirror.bn-editor {
             cursor: text;
+          }
+        }
+      }
+    }
+  }
+
+  .--docs--comments-sidebar.bn-root{
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+
+    .bn-threads-sidebar {
+      gap: 0;
+      border-radius: 0;
+
+      .bn-thread-expand-prompt p {
+        font-size: var(--c--globals--font--sizes--xs);
+      }
+
+      .bn-thread {
+        margin: 0;
+        max-width: 100%;
+        width: 100%;
+        min-width: 0;
+        padding: var(--c--globals--spacings--xxs) var(--c--globals--spacings--xxxs);
+        border: none;
+        border-radius: 0;
+        border-bottom: 1px solid var(--c--contextuals--border--surface--primary);
+
+        &.selected {
+          border: none;
+          background: var(--c--contextuals--background--semantic--neutral--tertiary);
+          max-height: none;
+
+          /**
+          * If we want to display the input on the top of the thread, 
+          * we need to change the order of the elements in the thread.
+          */
+          /* .bn-thread-comments {
+            order: 2;
+          } */
+
+          .bn-thread-composer {
+            //order: 1;
+            .bn-block-content:has(.ProseMirror-trailingBreak:only-child):after {
+                color: var(--c--contextuals--content--semantic--neutral--tertiary);
+                font-style: normal;
+            }
+          }
+        }
+
+        &:hover {
+          background: var(--c--contextuals--background--semantic--neutral--tertiary);
+        }
+
+        & .bn-header-text {
+          display: none;
+        }
+
+        &.bn-thread--orphaned {
+          & .bn-header-text {
+            display: block;
+            padding-inline: var(--c--globals--spacings--xs);
+          }
+        }
+
+        .bn-thread-comment {
+          padding: var(--c--globals--spacings--xs);
+
+          &:has(.bn-comment-actions) {
+            & > .mantine-Group-root:first-child {
+              background: linear-gradient(
+                to left,
+                var(--c--contextuals--background--semantic--neutral--tertiary) 90%,
+                rgba(255, 255, 255, 0) 100%
+              );
+            }
+
+            .bn-menu-dropdown {
+              box-shadow: 0px 0px 6px 0px #0000911a;
+            }
           }
         }
       }
