@@ -4,6 +4,7 @@ import { css } from 'styled-components';
 import { Box } from '@/components';
 import { useCunninghamTheme } from '@/cunningham/useCunninghamTheme';
 import { LeftPanelCollapseButton } from '@/features/left-panel';
+import { RightPanelCollapseButton } from '@/features/right-panel/components/RightPanelCollapseButton';
 import { useResponsiveStore } from '@/stores';
 
 /**
@@ -22,7 +23,7 @@ export const FloatingBar = () => {
     const sm = spacingsTokens['sm'];
     return css`
       position: sticky;
-      top: calc(-${base});
+      top: 0;
       left: 0;
       right: 0;
       width: calc(100% + ${base} + ${base});
@@ -32,9 +33,7 @@ export const FloatingBar = () => {
       margin-right: calc(-${base});
       margin-top: calc(-${base});
       z-index: 21; // Under editor select box but above other elements (e.g., doc title, suggestion menu)
-      display: flex;
       align-items: flex-start;
-      justify-content: flex-start;
       isolation: isolate;
 
       &::before {
@@ -73,8 +72,11 @@ export const FloatingBar = () => {
       className="--docs--floating-bar"
       data-testid="floating-bar"
       $css={FLOATING_STYLES}
+      $direction="row"
+      $justify="space-between"
     >
       <LeftPanelCollapseButton />
+      <RightPanelCollapseButton />
     </Box>
   );
 };

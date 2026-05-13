@@ -5,8 +5,9 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { createGlobalStyle } from 'styled-components';
 
-import { Loading } from '@/components';
+import { Box, Loading } from '@/components';
 import { DEFAULT_QUERY_RETRY } from '@/core';
 import {
   Doc,
@@ -19,6 +20,7 @@ import {
 import { KEY_AUTH, setAuthUrl, useAuth } from '@/features/auth';
 import { FloatingBar } from '@/features/docs/doc-header/components/FloatingBar';
 import { getDocChildren, subPageToTree } from '@/features/docs/doc-tree/';
+import { RightPanel } from '@/features/right-panel/components/RightPanel';
 import { DocEditorSkeleton, useSkeletonStore } from '@/features/skeletons';
 import { MainLayout } from '@/layouts';
 import { MAIN_LAYOUT_ID } from '@/layouts/conf';
@@ -31,6 +33,12 @@ const DocEditor = dynamic(
     loading: () => <DocEditorSkeleton />,
   },
 );
+
+const DocLayoutGlobalStyle = createGlobalStyle`
+  #${MAIN_LAYOUT_ID} {
+    padding: 0;
+  }
+`;
 
 export function DocLayout() {
   const {
@@ -62,8 +70,14 @@ export function DocLayout() {
         }}
       >
         <MainLayout enableResizablePanel={true}>
-          <FloatingBar />
-          <DocPage id={id} />
+          <DocLayoutGlobalStyle />
+          <Box $direction="row" $width="100%">
+            <Box $width="100%" $margin={{ horizontal: 'auto' }} $padding="base">
+              <FloatingBar />
+              <DocPage id={id} />
+            </Box>
+            <RightPanel />
+          </Box>
         </MainLayout>
       </TreeProvider>
     </>
